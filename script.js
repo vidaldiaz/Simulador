@@ -11,10 +11,10 @@ let seguirComprando = true
 let continuar = 1
 
 let producto = parseInt(prompt(`¿Qué deseas comprar?
-1- CD ($250)
-2- Cassette ($150)
-3- Vinil ($450)
-4- Mini Disk ($400)`))
+1- CD ($${precioCD})
+2- Cassette ($${precioCassette})
+3- Vinil ($${precioVinil})
+4- Mini Disk ($${precioMiniDisk})`))
 
 while(seguirComprando){
     if(producto === 1){
