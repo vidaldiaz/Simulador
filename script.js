@@ -10,29 +10,21 @@ let total = 0
 let seguirComprando = true
 let continuar = 1
 
-let producto = parseInt(prompt(`¿Qué deseas comprar?
-1- CD ($${precioCD})
-2- Cassette ($${precioCassette})
-3- Vinil ($${precioVinil})
-4- Mini Disk ($${precioMiniDisk})`))
+let producto = printMenu()
 
 while(seguirComprando){
     if(producto === 1){
-        cantidad = parseInt(prompt("Introduce la cantidad de CDs:"))
-        total = total + (precioCD * cantidad)
-        cantidad = 0
+        cantidad = setCantidad()
+        calculo(precioCD, cantidad)
     } else if (producto === 2){
-        cantidad = parseInt(prompt("Introduce la cantidad de Cassettes:"))
-        total = total + (precioCassette * cantidad)
-        cantidad = 0
+        cantidad = setCantidad()
+        calculo(precioCassette, cantidad)
     } else if (producto === 3){
-        cantidad = parseInt(prompt("Introduce la cantidad de Viniles:"))
-        total = total + (precioVinil * cantidad)
-        cantidad = 0
+        cantidad = setCantidad()
+        calculo(precioVinil, cantidad)
     } else if (producto === 4){
-        cantidad = parseInt(prompt("Introduce la cantidad de Mini Disks:"))
-        total = total + (precioMiniDisk * cantidad)
-        cantidad = 0
+        cantidad = setCantidad()
+        calculo(precioMiniDisk, cantidad)
     }
     
     continuar = parseInt(prompt(`¿Deseas seguir comprando?
@@ -41,14 +33,30 @@ while(seguirComprando){
 
 
     if(continuar === 1){
-        producto = parseInt(prompt(`¿Qué deseas comprar?
-            1- CD ($250)
-            2- Cassette ($150)
-            3- Vinil ($450)
-            4- Mini Disk ($400)`))
+        producto = printMenu()
     } else if (continuar === 2){
         seguirComprando = false
     }
         
 }
 alert("El total de tu cuenta es: " + total)
+
+
+
+function setCantidad () {
+    cantidad = parseInt(prompt("Introduce la cantidad:"))
+    return cantidad
+}
+
+function calculo (precioProducto, cantidad){
+    total = total + (precioProducto * cantidad)
+    cantidad = 0
+}
+
+function printMenu () {
+    return parseInt(prompt(`¿Qué deseas comprar?
+    1- CD ($${precioCD})
+    2- Cassette ($${precioCassette})
+    3- Vinil ($${precioVinil})
+    4- Mini Disk ($${precioMiniDisk})`))
+}
