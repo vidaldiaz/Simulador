@@ -1,30 +1,43 @@
 alert("Bienvenido a tu tienda de discos.")
 
-const precioCD = 250
-const precioCassette = 150
-const precioVinil = 450
-const precioMiniDisk = 400
 
-let cantidad = 0
+//let cantidad = 0
 let total = 0
 let seguirComprando = true
 let continuar = 1
+const carrito = []
+const listaArticulos = []
+
+
+class Articulo {
+constructor (tipo, precio){
+    this.tipo = tipo;
+    this.precio = precio;
+    }
+}
+
+const cd = new Articulo("CD", 250)
+listaArticulos.push(cd)
+const cassette = new Articulo("Cassette", 150)
+listaArticulos.push(cassette)
+const vinil = new Articulo("Vinil", 450)
+listaArticulos.push(vinil)
+const miniDisk = new Articulo("Mini Disk", 400)
+listaArticulos.push(miniDisk)
+
+console.log(listaArticulos)
 
 let producto = printMenu()
 
 while(seguirComprando){
     if(producto === 1){
-        cantidad = setCantidad()
-        calculo(precioCD, cantidad)
+        carrito.push(listaArticulos[producto -1])
     } else if (producto === 2){
-        cantidad = setCantidad()
-        calculo(precioCassette, cantidad)
+        carrito.push(listaArticulos[producto -1])
     } else if (producto === 3){
-        cantidad = setCantidad()
-        calculo(precioVinil, cantidad)
+        carrito.push(listaArticulos[producto -1])
     } else if (producto === 4){
-        cantidad = setCantidad()
-        calculo(precioMiniDisk, cantidad)
+        carrito.push(listaArticulos[producto -1])
     }
     
     continuar = parseInt(prompt(`¿Deseas seguir comprando?
@@ -39,24 +52,31 @@ while(seguirComprando){
     }
         
 }
+
+console.log(carrito)
+calculo()
 alert("El total de tu cuenta es: " + total)
 
 
 
 function setCantidad () {
-    cantidad = parseInt(prompt("Introduce la cantidad:"))
-    return cantidad
+    noArticulos = parseInt(prompt("Introduce la cantidad:"))
+    return noArticulos
 }
 
-function calculo (precioProducto, cantidad){
-    total = total + (precioProducto * cantidad)
-    cantidad = 0
+function calculo (){
+    carrito.forEach(elemento =>
+        total += elemento.precio)
+    return total
 }
 
-function printMenu () {
+
+
+function printMenu() {
     return parseInt(prompt(`¿Qué deseas comprar?
-    1- CD ($${precioCD})
-    2- Cassette ($${precioCassette})
-    3- Vinil ($${precioVinil})
-    4- Mini Disk ($${precioMiniDisk})`))
+    1- ${listaArticulos[0].tipo} ($${listaArticulos[0].precio})
+    2- ${listaArticulos[1].tipo} ($${listaArticulos[1].precio})
+    3- ${listaArticulos[2].tipo} ($${listaArticulos[2].precio})
+    4- ${listaArticulos[3].tipo} ($${listaArticulos[3].precio})`))    
 }
+
