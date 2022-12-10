@@ -17,23 +17,61 @@ const showTotal = document.getElementById('showTotal')
 
 
 
-class Articulo {
-constructor (tipo, precio){
-    this.tipo = tipo;
-    this.precio = precio;
-    }
+//Alimentar lista de articulos
+const album =  {}
+let number = 0
+
+for (let i = 0; i < 10; i++) {
+    number = getRandomAlbum(1, 89998)
+    console.log(number)
+    getAlbumInfo(number)
 }
 
-const cd = new Articulo("CD", 250)
-listaArticulos.push(cd)
-const cassette = new Articulo("Cassette", 150)
-listaArticulos.push(cassette)
-const vinil = new Articulo("Vinil", 450)
-listaArticulos.push(vinil)
-const miniDisk = new Articulo("Mini Disk", 400)
-listaArticulos.push(miniDisk)
 
-console.log(listaArticulos)
+
+function getAlbumInfo(number){
+fetch(`https://api.discogs.com/releases/${number}`)
+.then(response => response.json())
+.then(response => {
+    //console.log(response)
+    const {artists, title, genres, lowest_price, released, community, country, formats} = response
+    album.id = number
+    //Get Artist Name
+    //console.log(artists[0].name)
+    album.artist = artists[0].name
+    // //Get Album Name
+    // //console.log(title)
+    album.title = title
+    // //Get Genre
+    // //console.log(genres[0])
+    album.genre = genres[0]
+    // //Get Price
+    // //console.log(lowest_price)
+    album.price = lowest_price
+    // //Get Release Year
+    // //console.log(released)
+    album.released = released
+    // //Get Country
+    // //console.log(country)
+    album.country = country
+    // //Get Format
+    // //console.log(formats[0].name)
+    album.format = formats[0].name
+    // //Get Rating
+    // //console.log(community.rating.average)
+    album.rate = community.rating.average
+    listaArticulos.push({...album})
+})
+.catch(error => console.log(error))
+}
+
+console.log("Lista de Articulos", listaArticulos)
+
+function getRandomAlbum(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
+
 
 
 
@@ -47,68 +85,75 @@ accessButton.onclick = () => {
     saludo.innerText = `Bienvenido a tu tienda de discos ${localStorage.getItem('usuario')}`
     workDiv.append(saludo)
 
-    createProductList()
-    showPrice()
-    createAddButton()
-    createComprarButton()
+    showAvailableDisk()
+
+    //createProductList()
+    //showPrice()
     
-    const productList = document.getElementById('products')
+    //createComprarButton()
+    
+    // const productList = document.getElementById('products')
 
-    productList.onchange = () => {
-        const price = document.getElementById('price')
-        if (productList.value === 'CD') {
-            price.innerText = `${(listaArticulos[0].precio)}`
-        } else if (productList.value === 'Cassette') {
-            price.innerText = `${(listaArticulos[1].precio)}`
-        } else if (productList.value === 'Vinil') {
-            price.innerText = `${(listaArticulos[2].precio)}`
-        } else if (productList.value === 'Mini Disk') {
-            price.innerText = `${(listaArticulos[3].precio)}`
-        }
-        console.log(productList.value)
-    }
+    // productList.onchange = () => {
+    //     const price = document.getElementById('price')
+    //     if (productList.value === 'CD') {
+    //         price.innerText = `${(listaArticulos[0].precio)}`
+    //     } else if (productList.value === 'Cassette') {
+    //         price.innerText = `${(listaArticulos[1].precio)}`
+    //     } else if (productList.value === 'Vinil') {
+    //         price.innerText = `${(listaArticulos[2].precio)}`
+    //     } else if (productList.value === 'Mini Disk') {
+    //         price.innerText = `${(listaArticulos[3].precio)}`
+    //     }
+    //     console.log(productList.value)
+    // }
 
-    const anadirCarrito = document.getElementById('addCart')
-
-    anadirCarrito.onclick = () => {
-        if (productList.value === 'CD') {
-            carrito.push(listaArticulos[0])
-            updateList(listaArticulos[0])
-        } else if (productList.value === 'Cassette') {
-            carrito.push(listaArticulos[1])
-            updateList(listaArticulos[1])
-        } else if (productList.value === 'Vinil') {
-            carrito.push(listaArticulos[2])
-            updateList(listaArticulos[2])
-        } else if (productList.value === 'Mini Disk') {
-            carrito.push(listaArticulos[3])
-            updateList(listaArticulos[3])
-        }
-
-
-        
-
-        console.log(carrito)
-    }
-
-    const comprarButton = document.getElementById('comprarButton')
-
-    comprarButton.onclick = () => {
-        carrito.forEach(product => {
-            total += product.precio
+    const addCartButtons = document.querySelectorAll('.addCart')
+    
+    const addCart = function (event) {
+        console.log(this.id)
+        listaArticulos.forEach(album => {
+            if(album.id === parseInt(this.id)){
+                console.log(album)
+                console.log(carrito.includes(album))
+                if(carrito.includes(album)){
+                    carrito[carrito.indexOf(album)].quantity++
+                } else {
+                    album.quantity = 1
+                    carrito.push(album)
+                }
+                
+                console.log("Carrito", carrito)
+            }
         })
-        const addButton = document.getElementById('addCart')
-        addButton.remove()
-        const hTotal = document.createElement('h1')
-        hTotal.setAttribute('id', 'hTotal')
-        hTotal.innerText = `Tu gran total es de $${total}`
-        showTotal.append(hTotal)
-        
-        console.log(total)
     }
+
+    addCartButtons.forEach(button => {
+        button.addEventListener("click", addCart)
+
+    })
+
+    // const comprarButton = document.getElementById('comprarButton')
+
+    // comprarButton.onclick = () => {
+    //     carrito.forEach(product => {
+    //         total += product.precio
+    //     })
+    //     const addButton = document.getElementById('addCart')
+    //     addButton.remove()
+    //     const hTotal = document.createElement('h1')
+    //     hTotal.setAttribute('id', 'hTotal')
+    //     hTotal.innerText = `Tu gran total es de $${total}`
+    //     showTotal.append(hTotal)
+        
+    //     console.log(total)
+    // }
 
 
 }
+
+
+
 
 function updateList (elemento) {
     const added = document.createElement('p')
@@ -142,8 +187,9 @@ function showPrice () {
 
 function createAddButton () {
     const addButton = document.createElement('button')
-    addButton.setAttribute('id', 'addCart')
-    addButton.innerText = 'Agregar a Carrito'
+    addButton.setAttribute('class', 'addCart')
+    addButton.setAttribute('id', `${album.id}`)
+    addButton.innerText = 'Agregar al Carrito'
     productSection.append(addButton)
 }
 
@@ -154,4 +200,36 @@ function createComprarButton () {
     comprarButton.innerText = 'COMPRAR'
     productSection.append(br)
     productSection.append(comprarButton)
+}
+
+function showAvailableDisk () {
+
+    listaArticulos.forEach(album => {
+        const albumInfo = document.createElement('div')
+        albumInfo.setAttribute('class', 'album')
+        const albumHeader = document.createElement('h3')
+        albumHeader.innerText = `${album.title} - ${album.artist}`
+        const albumGenre = document.createElement('p')
+        albumGenre.innerText = `Genre: ${album.genre}`
+        const albumPrice = document.createElement('p')
+        albumPrice.innerText = `Price: ${album.price}`
+        const albumReleased = document.createElement('p')
+        albumReleased.innerText = `Released Year: ${album.released}`
+        const albumCountry = document.createElement('p')
+        albumCountry.innerText = `Country: ${album.country}`
+        const albumFormat = document.createElement('p')
+        albumFormat.innerText = `Format: ${album.format}`
+        const albumRate = document.createElement('p')
+        albumRate.innerText = `Rate: ${album.rate}`
+        albumInfo.append(albumHeader, albumGenre, albumPrice, albumReleased, albumCountry, albumFormat, albumRate)
+        productSection.append(albumInfo)
+        
+        const addButton = document.createElement('button')
+        addButton.setAttribute('class', 'addCart')
+        addButton.setAttribute('id', album.id)
+        addButton.innerText = 'Agregar al Carrito'
+        productSection.append(addButton)
+
+
+})
 }
